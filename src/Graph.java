@@ -1,3 +1,10 @@
+/*
+ * TODO:
+
+ * Drag and drop line component
+ * Reject duplicate edge component
+ */
+
 import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
@@ -37,7 +44,18 @@ public class Graph extends GraphicsProgram {
     
     private static GraphNode startNode;
     private static GraphNode destinationNode;
+    
+    private static GLine thisLine;
 
+    public void mouseMoved(MouseEvent e) {
+    	if (start != -1 && end == -1) {
+    		thisLine.setVisible(false);
+    		thisLine = new GLine(nodes.get(start).getX(), nodes.get(start).getY(), e.getX(), e.getY());
+    		thisLine.setColor(Color.BLUE);
+    		thisLine.setVisible(true);
+    		add(thisLine);
+    	}
+    }
     public void mouseClicked(MouseEvent e) {
         int x1 = e.getX();
         int y1 = e.getY();
@@ -90,6 +108,10 @@ public class Graph extends GraphicsProgram {
                     d = distance(x1, nodes.get(i).getX(), y1, nodes.get(i).getY());
                     if (d < 10) {
                         start = i;
+                        thisLine = new GLine(nodes.get(i).getX(), nodes.get(i).getY(),
+                        					 nodes.get(i).getX(), nodes.get(i).getY());
+                        thisLine.setColor(Color.BLUE);
+                        add(thisLine);
                         break;
                     }
                 }
@@ -129,11 +151,13 @@ public class Graph extends GraphicsProgram {
                             (nodes.get(start)).addNeighborEdge(thisEdge);
                             
                             add(length);
+                            
                         }
                     }
                 }
                 start = -1;
                 end = -1;
+                thisLine.setVisible(false);
             }
         }
     }
@@ -206,7 +230,7 @@ public class Graph extends GraphicsProgram {
         		configLabels();
         	}
         	try {
-        		double d = (new PathFinder()).computeShortestPath(startNode, destinationNode);
+        		double d = (new PathFinder()).computeShortestPath(startNode, destinationNode, nodes);
         		doneLabel = new GLabel("FINAL DISTANCE: " + (new DecimalFormat("0.00").format(d)), 250, 50);
         		doneLabel.setFont(new Font("TIMES NEW ROMAN", 100, 30));
         		doneLabel.setColor(Color.BLACK);
