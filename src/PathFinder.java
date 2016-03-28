@@ -3,7 +3,7 @@ import java.util.*;
 
 public class PathFinder {
 
-	private static final String algSelection = "Djikstra";
+	private static final String algSelection = "A*";
 	private static ArrayList<GraphNode> visited;
 
 	public PathFinder() {
